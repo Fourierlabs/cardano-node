@@ -34,6 +34,16 @@ packages:
     trace-dispatcher
     trace-resources
     trace-forward
+    ../plutus-master/doc/read-the-docs-site
+    ../plutus-master/plutus-benchmark
+    ../plutus-master/plutus-conformance
+    ../plutus-master/plutus-core
+    ../plutus-master/plutus-ledger-api
+    ../plutus-master/plutus-metatheory
+    ../plutus-master/plutus-tx
+    ../plutus-master/plutus-tx-plugin
+    ../plutus-master/prettyprinter-configurable
+    ../plutus-master/stubs/plutus-ghc-stub
 
 extra-packages:
   ouroboros-consensus-cardano-tools
@@ -86,6 +96,27 @@ write-ghc-environment-files: always
 package snap-server
   flags: +openssl
 
+package cardano-crypto-praos
+  flags: -external-libsodium-vrf
+
 -- IMPORTANT
 -- Do NOT add more source-repository-package stanzas here unless they are strictly
 -- temporary! Please read the section in CONTRIBUTING about updating dependencies.
+
+allow-newer:
+  *:plutus-core,
+  *:plutus-ledger-api,
+  *:brick,
+  *:bimap
+
+-- An older version of this package might not generate GEq instances.
+-- See https://github.com/obsidiansystems/dependent-sum/issues/72
+-- TODO: is there some way we can get this into the cabal files given
+-- that we don't depend on it explicitly? Maybe we can add an unused
+-- dependency but turn off the warning?
+constraints:
+  dependent-sum >= 0.7.1.0,
+
+-- See https://github.com/input-output-hk/nothunks/issues/17
+package nothunks
+  flags: +vector
